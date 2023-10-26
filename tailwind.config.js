@@ -6,6 +6,9 @@ export default {
       colors: {
         primary: '#e3e3e3',
       },
+      zIndex:{
+        '-10': "-10",
+      }
     },
   },
   plugins: [],
