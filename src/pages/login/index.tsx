@@ -7,7 +7,7 @@ import Eyeslasesicon from '../../assets/eye-slash.svg';
 import jeepLogo from '../../assets/jeeplogo.png';
 import toast, { Toaster } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
-import { setAuthenticated,setAdmin } from '../../Redux/loginSlice';
+import { setAdmin } from '../../Redux/loginSlice';
 import { useNavigate } from 'react-router-dom';
 import { RouteUrl } from '../../routes';
 
@@ -15,8 +15,7 @@ export function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate()
   const [isSeePassword, setIsSeePassword] = useState(false);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [userData, setUserData] = useState({ username: '', password: '' });
   const [listofUser, setListofUser] = useState<
   Array<{ Role: string; id: string; Email_Address: string; }> | Array<{
      [x: string]: string;
@@ -32,7 +31,6 @@ export function Login() {
           ...doc.data(),
           id: doc.id,
         }));
-        console.log(newData);
         setListofUser(newData)
       })
       .catch((error) => {
@@ -45,13 +43,11 @@ export function Login() {
   }, []);
  const handleSumbmit = async(event: { preventDefault: () => void; }) =>{
   event.preventDefault();
-    const checkuser = listofUser?.find((user) => user.Email_Address === username && user.Role === 'ADMIN')
+    const checkuser = listofUser?.find((user) => user.Email_Address === userData.username && user.Role === 'ADMIN')
     if (checkuser) {
       if ('Role' in checkuser && 'id' in checkuser && 'Password' in checkuser) {
-        if (checkuser.Password === password){
-          console.log('Login successful!');
+        if (checkuser.Password === userData.password){
           toast('Login successful!')
-          dispatch(setAuthenticated(true))
           dispatch(setAdmin([checkuser]))
           navigate(RouteUrl.DASHBOARD)
         } else {
@@ -85,14 +81,14 @@ export function Login() {
             <input className='mt-2 placeholder:text-lg placeholder:italic text-black placeholder:font-light block bg-white w-4/5 border border-vividOrange rounded py-4 px-5 shadow-sm focus:outline-none focus:border-vividOrange focus:ring-vividOrange focus:ring-1 sm:text-sm'
              type="email" 
              placeholder="Email"
-             value={username}
-             onChange={(e) => setUsername(e.target.value)}
+             value={userData.username}
+             onChange={(e) => setUserData({ ...userData, username: e.target.value})}
              />
             <input className='text-black mt-2 placeholder:text-lg placeholder:italic placeholder:text-charcoalBlack placeholder:font-light block bg-white w-4/5 border border-vividOrange rounded py-4 px-5 shadow-sm focus:outline-none focus:border-vividOrange focus:ring-vividOrange focus:ring-1 sm:text-sm mb-4'
              type="password"
              placeholder="Password"
-             value={password}
-             onChange={(e) => setPassword(e.target.value)}
+             value={userData.password}
+             onChange={(e) => setUserData({ ...userData, password: e.target.value})}
              />
             <button
                     type="button"
@@ -124,7 +120,7 @@ export function Login() {
             </a>
             </p>
               <a
-                href={"/forgot-password"}
+                href="/forgot-password"
                 className="text-charcoalBlack text-lg italic font-medium transition-all hover:text-blue-500"
               >
                 Forget Password?
