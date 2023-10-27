@@ -3,6 +3,8 @@ import { RouteUrl } from './routes';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { Dashboard, Error, Login } from './pages';
 import { Public, Private } from './layout';
+import { Provider } from 'react-redux'; 
+import store from './Redux/store';
 
 export default function App() {
   const router = createBrowserRouter([
@@ -30,6 +32,8 @@ export default function App() {
     },
   ]);
   return (
+    <Provider store={store}>
     <RouterProvider router={router} fallbackElement={<h6>Loading...</h6>} />
+    </Provider>
   );
 }
