@@ -37,6 +37,16 @@ module.exports = {
         ignoreIIFE: false,
       },
     ],
+    '@typescript-eslint/no-unsafe-call': 0,
+    '@typescript-eslint/no-misused-promises': [
+      'error',
+      {
+        checksVoidReturn: false,
+      },
+    ],
+    'require-await': 'off',
+    '@typescript-eslint/require-await': 0,
+    '@typescript-eslint/restrict-template-expressions': 0,
   },
 
   ignorePatterns: [

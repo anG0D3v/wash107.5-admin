@@ -1,9 +1,17 @@
 import React from 'react';
 import { RouteUrl } from './routes';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import { Dashboard, Error, Login } from './pages';
+import {
+  Dashboard,
+  Error,
+  Inventory,
+  Login,
+  Maintenance,
+  Reports,
+  Users,
+} from './pages';
 import { Public, Private } from './layout';
-import { Provider } from 'react-redux'; 
+import { Provider } from 'react-redux';
 import store from './Redux/store';
 
 export default function App() {
@@ -28,12 +36,28 @@ export default function App() {
           path: RouteUrl.DASHBOARD,
           element: <Dashboard />,
         },
+        {
+          path: RouteUrl.INVENTORY,
+          element: <Inventory />,
+        },
+        {
+          path: RouteUrl.REPORTS,
+          element: <Reports />,
+        },
+        {
+          path: RouteUrl.USERS,
+          element: <Users />,
+        },
+        {
+          path: RouteUrl.MAINTENANCE,
+          element: <Maintenance />,
+        },
       ],
     },
   ]);
   return (
     <Provider store={store}>
-    <RouterProvider router={router} fallbackElement={<h6>Loading...</h6>} />
+      <RouterProvider router={router} fallbackElement={<h6>Loading...</h6>} />
     </Provider>
   );
 }

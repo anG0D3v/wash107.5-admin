@@ -1,4 +1,4 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import {
   persistStore,
   persistReducer,
@@ -8,20 +8,20 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
-} from 'redux-persist'
-import storage from "redux-persist/lib/storage/session";
-import loginReducer from './loginSlice'
+} from 'redux-persist';
+import storage from 'redux-persist/lib/storage/session';
+import loginReducer from './loginSlice';
 
 const persistConfig = {
   key: 'root',
-  storage
-}
+  storage,
+};
 
 const rootReducer = combineReducers({
-  login: loginReducer
-})
+  login: loginReducer,
+});
 
-const persistedReducer = persistReducer<RootState>(persistConfig, rootReducer)
+const persistedReducer = persistReducer<RootState>(persistConfig, rootReducer);
 
 const store = configureStore({
   reducer: persistedReducer,
@@ -31,10 +31,10 @@ const store = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     }),
-})
+});
 
-export const persistor = persistStore(store)
+export const persistor = persistStore(store);
 
-export default store
+export default store;
 
-export type RootState = ReturnType<typeof rootReducer>
+export type RootState = ReturnType<typeof rootReducer>;
