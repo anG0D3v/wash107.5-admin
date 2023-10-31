@@ -30,7 +30,7 @@ const Modal: React.FC<ModalProps> = ({ open, onClose, title, content, actions })
       </DialogContent>
       <DialogActions>
         {actions.map((action, index) => (
-          <Button key={index} onClick={action.onClick} color={action.color}>
+          <Button className='normal-case' variant='contained' key={index} onClick={action.onClick} color={action.color}>
             {action.label}
           </Button>
         ))}

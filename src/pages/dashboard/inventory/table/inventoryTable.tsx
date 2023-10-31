@@ -19,11 +19,9 @@ function InventoryTable() {
     const fetchData = async () => {
       try {
         const loadedInventory = await fetchInventory('inventoryTable');
-        console.log(loadedInventory)
         loadedInventory?.shift();
         setInventory(loadedInventory as unknown as inventoryList[]);
       } catch (error) {
-        console.error('Error fetching inventory:', error);
         setInventory([]); 
       }
     };
