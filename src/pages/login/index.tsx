@@ -7,7 +7,8 @@ import Eyeslasesicon from '../../assets/eye-slash.svg';
 import jeepLogo from '../../assets/jeeplogo.png';
 import toast, { Toaster } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
-import { AdminInfo, setAdmin } from '../../Redux/loginSlice';
+import { setAdmin } from '../../Redux/loginSlice';
+import { AdminInfo } from '../../types/global';
 import { useNavigate } from 'react-router-dom';
 import { RouteUrl } from '../../routes';
 
