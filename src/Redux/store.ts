@@ -1,4 +1,10 @@
-import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import {
+  configureStore,
+  combineReducers,
+  PayloadAction,
+  CombinedState,
+  Reducer,
+} from '@reduxjs/toolkit';
 import {
   persistStore,
   persistReducer,
@@ -10,18 +16,36 @@ import {
   REGISTER,
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage/session';
-import loginReducer from './loginSlice';
+import loginReducer, { AdminState } from './loginSlice';
+import userReducer, { UserState } from './UserSlice';
+import logger from 'redux-logger';
 
 const persistConfig = {
   key: 'root',
   storage,
 };
 
-const rootReducer = combineReducers({
-  login: loginReducer,
+const reducers = combineReducers({
+  admin: loginReducer,
+  users: userReducer,
 });
 
-const persistedReducer = persistReducer<RootState>(persistConfig, rootReducer);
+const rootReducer = (
+  state: CombinedState<
+    { admin: AdminState; users: UserState } | never | undefined
+  >,
+  act: PayloadAction<unknown>,
+) => {
+  if (act.type === 'admin/signOut') {
+    state = undefined;
+  }
+  return reducers(state, act);
+};
+
+const persistedReducer = persistReducer<RootState>(
+  persistConfig,
+  rootReducer as Reducer,
+);
 
 const store = configureStore({
   reducer: persistedReducer,
@@ -30,7 +54,7 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }),
+    }).concat(logger),
 });
 
 export const persistor = persistStore(store);

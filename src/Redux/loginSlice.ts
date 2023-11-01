@@ -1,21 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { UserInfo } from '../types/global';
 
-export type AdminInfo = {
-  Address: string;
-  Clien_Id: string;
-  Email_Address: string;
-  First_Name: string;
-  Last_Name: string;
-  Password: string;
-  Phone_Number: string;
-  Registration_Date: string;
-  Role: string;
-  id: string;
-};
 // export interface AdminState<T> {
 //   admin: T | object;
 // }
-// const initialState: AdminState<AdminInfo> = {
+// const initialState: AdminState<UserInfo> = {
 //   admin: {
 //     Address: '',
 //     Clien_Id: '',
@@ -31,7 +20,7 @@ export type AdminInfo = {
 // };
 
 export interface AdminState {
-  info: AdminInfo | null; // Change the type to AdminInfo | null
+  info: UserInfo | null; // Change the type to UserInfo | null
 }
 
 const initialState: AdminState = {
@@ -42,11 +31,15 @@ const adminSlice = createSlice({
   name: 'admin',
   initialState,
   reducers: {
-    setAdmin: (state, action: PayloadAction<AdminInfo>) => {
+    setAdmin: (state, action: PayloadAction<UserInfo>) => {
       state.info = action.payload;
     },
+    signOut: (state) => ({
+      ...state,
+      info: null,
+    }),
   },
 });
 
-export const { setAdmin } = adminSlice.actions;
+export const { setAdmin, signOut } = adminSlice.actions;
 export default adminSlice.reducer;

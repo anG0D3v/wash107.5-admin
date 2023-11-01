@@ -8,7 +8,7 @@ import jeepLogo from '../../assets/jeeplogo.png';
 import toast, { Toaster } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { setAdmin } from '../../Redux/loginSlice';
-import { AdminInfo } from '../../types/global';
+import { UserInfo } from '../../types/global';
 import { useNavigate } from 'react-router-dom';
 import { RouteUrl } from '../../routes';
 
@@ -17,7 +17,7 @@ export function Login() {
   const navigate = useNavigate();
   const [isSeePassword, setIsSeePassword] = useState(false);
   const [userData, setUserData] = useState({ username: '', password: '' });
-  const [listofUser, setListofUser] = useState<AdminInfo[]>([]);
+  const [listofUser, setListofUser] = useState<UserInfo[]>([]);
 
   const loadUsers = async () => {
     await getDocs(collection(db, 'userTable'))
@@ -26,7 +26,7 @@ export function Login() {
           ...doc.data(),
           id: doc.id,
         }));
-        setListofUser(newData as AdminInfo[]);
+        setListofUser(newData as UserInfo[]);
       })
       .catch((error) => {
         console.error('Error loading users:', error);

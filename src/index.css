@@ -6,6 +6,7 @@
 
 body {
   background: #ffffff;
+  overflow: hidden !important;
 }
 
 @layer base {

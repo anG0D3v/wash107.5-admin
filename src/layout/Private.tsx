@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { Link, Navigate, Outlet } from 'react-router-dom';
 import { RouteUrl } from '../routes';
 import _ from 'lodash';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../Redux/store';
 import clsx from 'clsx';
 import { BiSolidReport } from 'react-icons/bi';
@@ -10,9 +10,12 @@ import { MdInventory, MdDashboard } from 'react-icons/md';
 import { FaUsers } from 'react-icons/fa6';
 import { RiSettings2Fill } from 'react-icons/ri';
 import { PiSignOutBold } from 'react-icons/pi';
+import { CustomButton } from '../components';
+import { signOut } from '../Redux/loginSlice';
 
 export default function Private() {
-  const admin = useSelector((state: RootState) => state.login);
+  const dispatch = useDispatch();
+  const admin = useSelector((state: RootState) => state.admin);
   const links = [
     {
       id: 0,
@@ -44,7 +47,11 @@ export default function Private() {
     setSelectedMenu({ ...item });
   }, []);
 
-  return _.isNil(admin) ? (
+  const logOut = () => {
+    dispatch(signOut());
+  };
+
+  return _.isNil(admin?.info) ? (
     <Navigate replace to={RouteUrl.HOME} />
   ) : (
     <div className="flex">
@@ -82,9 +89,13 @@ export default function Private() {
             ))}
           </div>
         </div>
-        <div className="bg-gray-800 text-white p-3 flex items-center gap-3">
-          <PiSignOutBold />
-          <h5 className="text-white">Sign Out</h5>
+        <div className="flex items-center gap-3">
+          <CustomButton
+            icon={<PiSignOutBold />}
+            children="Sign Out"
+            addedClass="w-full bg-gray-800 text-white rounded-none hover:transform-none"
+            onClick={logOut}
+          />
         </div>
       </div>
       {/* Body */}

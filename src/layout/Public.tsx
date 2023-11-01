@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../Redux/store';
 
 export default function Public() {
-  const admin = useSelector((state: RootState) => state.login);
+  const admin = useSelector((state: RootState) => state.admin);
   return !_.isNil(admin.info) ? (
     <Navigate to={RouteUrl.DASHBOARD} replace />
   ) : (
