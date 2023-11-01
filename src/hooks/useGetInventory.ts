@@ -8,9 +8,8 @@ export const fetchInventory = async (collectionName: string) =>{
             ...doc.data(),
             id: doc.id,
         }))
-        console.log(newData)
         return newData;
     } catch (error) {
-        console.log('Error reading Inventory list',error)
+        throw error
     }
 }

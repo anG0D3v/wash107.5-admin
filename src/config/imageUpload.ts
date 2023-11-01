@@ -9,7 +9,6 @@ export async function uploadImageToStorage(file: File, path: string): Promise<st
     const modifiedURL = downloadURL + `?alt=media&token=${snapshot.metadata.fullPath}`;
     return modifiedURL;
   } catch (error) {
-    console.log('Error uploading image:', error);
     throw error;
   }
 }

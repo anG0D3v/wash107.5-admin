@@ -26,7 +26,6 @@ export function Login() {
           ...doc.data(),
           id: doc.id,
         }));
-        console.log(newData)
         setListofUser(newData as AdminInfo[]);
       })
       .catch((error) => {

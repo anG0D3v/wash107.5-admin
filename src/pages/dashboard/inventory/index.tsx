@@ -3,16 +3,19 @@ import InventoryTable from './table/inventoryTable';
 import { CustomButton,CustomInput } from '../../../components';
 import Modal from '../../../components/modal/modal';
 import { db } from '../../../db';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc,updateDoc, doc } from 'firebase/firestore';
 import { uploadImageToStorage } from '../../../config/imageUpload';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../Redux/store';
 import toast, { Toaster } from 'react-hot-toast';
+import BackdropLoading from '../../../components/Backdrop/backdrop';
 
 export function Inventory() {
   const admin = useSelector((state: RootState) => state.login);
   const [open, setOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [showBackdrop, setShowBackdrop] = useState(false);
+  const [imgPrev,setImagePrev]= useState('');
   const [productDetails,setProductsDetails] = useState({
     Availability: true,
     Category: '',
@@ -31,8 +34,10 @@ export function Inventory() {
     const { name, value, type, files } = e.target;
     if (type === 'file') {
       if (files && files[0]) {
-        // Handle file input
         const file = files[0];
+        const blob = new Blob([file], { type: file.type });
+        const blobURL = URL.createObjectURL(blob);
+        setImagePrev(blobURL);
         setProductsDetails({ ...productDetails, [name]: file });
       }
     } else {
@@ -48,6 +53,7 @@ export function Inventory() {
   const handleClose = () => {
     setOpen(false);
   };
+
   const addProduct = async() =>{
     if (
       productDetails.Name &&
@@ -59,19 +65,25 @@ export function Inventory() {
     ) {
       const imageFile:any = productDetails.Image_Url;
       const storagePath = `/inventoryItems/${imageFile.name}`;
-      const imageUrl = await uploadImageToStorage(imageFile, storagePath);
-      const productData = { ...productDetails, Image_Url: imageUrl };
-      console.log(productData)
-      const productsCollection = collection(db, 'inventoryTable');
       try {
-        await addDoc(productsCollection, productData);
+        setOpen(false);
+        setShowBackdrop(true)
+        const imageUrl = await uploadImageToStorage(imageFile, storagePath);
+        const productData = { ...productDetails, Image_Url: imageUrl };
+        const productsCollection = collection(db, 'inventoryTable');
+        const docRef = await addDoc(productsCollection, productData);
+        const Inventory_Id = docRef.id; 
+        await updateDoc(doc(db, 'inventoryTable', Inventory_Id), {
+          Inventory_Id: Inventory_Id,
+          id: Inventory_Id
+        });
+        setShowBackdrop(false)
         toast('Document added successfully.');
       } catch (error) {
-        console.log(error)
+        setShowBackdrop(false)
         toast('Error adding document');
       }
     } else {
-      console.log(productDetails)
      toast('Product details are incomplete. Required fields are missing.');
     }
   }
@@ -100,6 +112,7 @@ export function Inventory() {
         ref={inputRef}
         type="text"
         name='Name'
+        value={productDetails.Name}
         placeholder="Product Name"
         onChange={(e: { target: { files: any; checked?: any; name?: any; value?: any; type?: any; }; }) =>handleInputChange(e)}
         helperMsg=""
@@ -109,15 +122,18 @@ export function Inventory() {
         ref={inputRef}
         type="text"
         name='Description'
+        value={productDetails.Description}
         placeholder="Description"
         onChange={(e: { target: { files: any; checked?: any; name?: any; value?: any; type?: any; }; }) =>handleInputChange(e)}
         helperMsg=""
       />
       <label htmlFor="">Product Image</label>
+      {imgPrev && <img src={imgPrev} className="w-16 h-16 object-contain rounded-full" alt="" />}
       <CustomInput
         ref={inputRef}
         type="file"
         name='Image_Url'
+        value={null}
         placeholder="Image"
         onChange={(e: { target: { files: any; checked?: any; name?: any; value?: any; type?: any; }; }) =>handleInputChange(e)}
         helperMsg=""
@@ -129,6 +145,7 @@ export function Inventory() {
         ref={inputRef}
         type="text"
         name='Category'
+        value={productDetails.Category}
         placeholder="Category"
         onChange={(e: { target: { files: any; checked?: any; name?: any; value?: any; type?: any; }; }) =>handleInputChange(e)}
         helperMsg=""
@@ -138,6 +155,7 @@ export function Inventory() {
         ref={inputRef}
         type="number"
         name='Price'
+        value={productDetails.Price}
         placeholder="Price"
         onChange={(e: { target: { files: any; checked?: any; name?: any; value?: any; type?: any; }; }) =>handleInputChange(e)}
         helperMsg=""
@@ -146,6 +164,7 @@ export function Inventory() {
       <CustomInput
         ref={inputRef}
         type="number"
+        value={productDetails.Quantity_In_Stock}
         name='Quantity_In_Stock'
         placeholder="Quantity"
         onChange={(e: { target: { files: any; checked?: any; name?: any; value?: any; type?: any; }; }) =>handleInputChange(e)}
@@ -157,6 +176,7 @@ export function Inventory() {
 
   return (
     <>
+    <BackdropLoading open={showBackdrop}  />
      <Toaster position="top-center" reverseOrder={false} />
       <Modal
         open={open}
