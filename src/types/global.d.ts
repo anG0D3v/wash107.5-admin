@@ -23,4 +23,5 @@ export type inventoryList = {
   Name: string;
   Price: number;
   Quantity_In_Stock: number;
+  id: string;
 };

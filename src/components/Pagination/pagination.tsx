@@ -22,7 +22,7 @@ export default function Pagination({
   const lastNumber = Math.min(lastNumberCal + postPerPage, totalPosts);
   return (
     <nav
-      className="flex items-center justify-end gap-x-10 border-t border-gray-200 bg-white pt-3"
+      className="flex items-center justify-end gap-x-10 border-t border-gray-200 bg-white pt-2"
       aria-label="Pagination"
     >
       <div className="block">

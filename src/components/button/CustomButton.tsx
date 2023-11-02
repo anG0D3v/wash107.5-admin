@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react';
 
 type BtnType = 'primary' | 'secondary' | 'transparent' | 'link';
 
-type BtnProps = {
+export type BtnProps = {
   children: ReactNode;
   disabled?: boolean;
   type?: BtnType;
@@ -25,7 +25,7 @@ const CustomButton: React.FC<BtnProps> = ({
     onClick={onClick}
     {...props}
     className={clsx(
-      'text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105',
+      'text-white font-semibold py-2 px-4 rounded-[3px] shadow-md transition duration-300 ease-in-out transform hover:scale-105',
       type === 'primary'
         ? 'bg-blue-500 hover:bg-blue-700 cursor-pointer '
         : disabled
