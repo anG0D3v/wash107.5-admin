@@ -1,21 +1,27 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { 
+  getInventoryPending,
+  getInventoryFulfilled,
+  getInventoryFailed 
+} from '../../../../Redux/InventorySlice';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchData } from '../../../../hooks/useFetchData';
+import { updateData } from '../../../../hooks/useUpdateData';
+import { deleteData } from '../../../../hooks/useDelete';
 import { inventoryList } from '../../../../types/global';
-import Pagination from '../../../../components/Pagination/pagination';
 import { CustomButton, CustomInput } from '../../../../components';
 import Modal from '../../../../components/modal/modal';
 import { uploadImageToStorage } from '../../../../config/imageUpload';
 import toast, { Toaster } from 'react-hot-toast';
 import { RootState } from '../../../../Redux/store';
-import { useSelector } from 'react-redux';
-import { db } from '../../../../db';
-import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import BackdropLoading from '../../../../components/Backdrop/backdrop';
+import DataTable from '../../../../components/Table/table';
 
 function InventoryTable() {
+  const dispatch = useDispatch();
   const admin = useSelector((state: RootState) => state.admin);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [inventory, setInventory] = useState<inventoryList[]>([]);
+  const inventory = useSelector((state: RootState) => state.inventory);
+  console.log(inventory)
   const [open, setOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [imgPrev, setImagePrev] = useState('');
@@ -30,25 +36,26 @@ function InventoryTable() {
     Quantity_In_Stock: 0,
     Inventory_Id: '',
   });
-  const postsPerPage = 5;
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const paginateData =
-    inventory && inventory.slice(indexOfFirstPost, indexOfLastPost);
-
+  
   useEffect(() => {
-    const loadInventories = async () => {
-      try {
-        const loadedInventory = await fetchData('inventoryTable');
-        loadedInventory?.shift();
-        setInventory(loadedInventory as unknown as inventoryList[]);
-      } catch (error) {
-        setInventory([]);
-      }
-    };
-
-    loadInventories();
+    loadInventory();
   }, []);
+
+  async function loadInventory() {
+    try {
+      dispatch(getInventoryPending());
+      const data = (await fetchData('inventoryTable')) as inventoryList[];
+      console.log(data)
+      data?.shift()
+      dispatch(
+        getInventoryFulfilled(
+          data
+        ),
+      );
+    } catch (error) {
+      dispatch(getInventoryFailed(error));
+    }
+  }
 
   const handleInputChange = (e: {
     target: {
@@ -220,15 +227,11 @@ function InventoryTable() {
         Last_Updated_By: updatedBy,
         Last_Updated_On: updatedOn,
       };
-
-      const docRef = doc(db, 'inventoryTable', documentId);
       setOpen(false);
-      setShowBackdrop(true);
-      updateDoc(docRef, productData)
+      setShowBackdrop(true)
+      await updateData('inventoryTable', documentId,productData)
         .then(async () => {
-          const loadedInventory = await fetchData('inventoryTable');
-          loadedInventory?.shift();
-          setInventory(loadedInventory as unknown as inventoryList[]);
+          await loadInventory()
           setShowBackdrop(false);
           toast('Document updated successfully');
         })
@@ -238,7 +241,6 @@ function InventoryTable() {
         });
     } else {
       const documentId = productDetails.Inventory_Id;
-      const docRef = doc(db, 'inventoryTable', documentId);
       const updatedOn = new Date().toISOString().slice(0, 19).replace('T', ' ');
       const updatedBy = admin.info?.id;
       const productData = {
@@ -248,11 +250,9 @@ function InventoryTable() {
       };
       setOpen(false);
       setShowBackdrop(true);
-      updateDoc(docRef, productData)
+      await updateData('inventoryTable', documentId,productData)
         .then(async () => {
-          const loadedInventory = await fetchData('inventoryTable');
-          loadedInventory?.shift();
-          setInventory(loadedInventory as unknown as inventoryList[]);
+          await loadInventory()
           setShowBackdrop(false);
           toast('Product updated successfully');
         })
@@ -262,22 +262,17 @@ function InventoryTable() {
         });
     }
   };
-  const handleDelete = (item: inventoryList) => {
+  const handleDelete = async(item: inventoryList) => {
     const documentId = item.Inventory_Id;
-    const docRef = doc(db, 'inventoryTable', documentId);
-    setOpen(false);
     setShowBackdrop(true);
-    deleteDoc(docRef)
+    deleteData('inventoryTable', documentId)
       .then(async () => {
-        const loadedInventory = await fetchData('inventoryTable');
-        loadedInventory?.shift();
-        setInventory(loadedInventory as unknown as inventoryList[]);
+        await loadInventory()
         setShowBackdrop(false);
         toast('Product deleted successfully');
       })
       .catch((error) => {
         setShowBackdrop(false);
-        setOpen(true);
         console.error('Error deleting document: ', error);
       });
   };
@@ -297,6 +292,32 @@ function InventoryTable() {
       onClick: handleEdit,
     },
   ];
+
+  const headerTable: string[] = [
+    "Name",
+    "Image",
+    "Description",
+    "Price",
+    "Category",
+    "Quantity_In_Stock"
+  ]
+  const dataTable: inventoryList[] = inventory?.data || [];
+  const actionValue = (item: inventoryList) =>[
+      <CustomButton
+      addedClass='mr-3 px-5'
+      type="primary" 
+      onClick={() => handleOpen(item)}
+      >
+        Edit
+      </CustomButton>,
+      <CustomButton 
+      type="secondary"
+      onClick={() => handleDelete(item)}
+      >
+        Delete
+      </CustomButton>,
+  ];
+
   return (
     <>
       <BackdropLoading open={showBackdrop} />
@@ -308,121 +329,14 @@ function InventoryTable() {
         content={editProduct}
         actions={Actions}
       />
-      <div className="mt-5 flow-root">
-        <div className="-mx-4 -my-2 overflow-x-auto md:overflow-visible sm:-mx-6 lg:-mx-8">
-          <div className="inline-block min-w-full py-2 align-middle px-4 sm:px-6 lg:px-8">
-            <div className="shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg mb-5">
-              <table className="min-w-full divide-y divide-gray-300">
-                <thead className="bg-gray-800  text-white">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 sm:pl-6 text-left text-sm font-semibold text-white"
-                    >
-                      Name
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-white"
-                    >
-                      Image
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-white"
-                    >
-                      Description
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-white"
-                    >
-                      Prcie
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-white"
-                    >
-                      Category
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-white"
-                    >
-                      Quantity Stock
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-white"
-                    >
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200 bg-white">
-                  {paginateData &&
-                    paginateData?.map((item: inventoryList, index: number) => (
-                      <tr key={index}>
-                        <td className="px-3 py-3.5 text-sm font-medium text-gray-900 sm:pl-6">
-                          {item.Name}
-                        </td>
-                        <td className="px-3 py-4 text-gray-500">
-                          <img
-                            className="w-16 h-16 object-contain rounded-full"
-                            src={item.Image_Url}
-                            alt="Noimage"
-                          />
-                        </td>
-                        <td className="px-3 py-4 text-sm text-gray-500">
-                          {item.Description}
-                        </td>
-                        <td className="px-3 py-4 text-sm text-gray-500">
-                          {item.Price}
-                        </td>
-                        <td className="px-3 py-4 text-sm text-gray-500">
-                          {item.Category}
-                        </td>
-                        <td className="px-3 py-4 text-sm text-gray-500">
-                          {item.Quantity_In_Stock}
-                        </td>
-                        <td className="px-3 py-4 text-sm text-gray-500 flex">
-                          <div className="pr-3">
-                            <CustomButton
-                              type="secondary"
-                              onClick={() => handleOpen(item)}
-                              disabled={false}
-                            >
-                              Edit Products
-                            </CustomButton>
-                          </div>
-                          <div>
-                            <CustomButton
-                              type="secondary"
-                              onClick={() => handleDelete(item)}
-                              disabled={false}
-                            >
-                              Delete Products
-                            </CustomButton>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div>
-        {inventory && (
-          <Pagination
-            postPerPage={postsPerPage}
-            totalPosts={inventory.length}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-          />
-        )}
-      </div>
+      <DataTable
+        loading={inventory.loading}
+        headers={headerTable}
+        data={dataTable}
+        actionHeader="Actions" 
+        actionValue={actionValue}
+      />
+
     </>
   );
 }

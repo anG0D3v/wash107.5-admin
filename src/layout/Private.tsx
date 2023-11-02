@@ -103,7 +103,7 @@ export default function Private() {
         <nav>
           <h1 className="bg-gray-800 text-white p-5">Welcome</h1>
         </nav>
-        <div className="p-5">
+        <div className="p-5 overflow-y-auto overflow-x-hidden">
           <Outlet />
         </div>
       </div>
