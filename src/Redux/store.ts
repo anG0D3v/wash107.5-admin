@@ -18,7 +18,8 @@ import {
 import storage from 'redux-persist/lib/storage/session';
 import loginReducer, { AdminState } from './loginSlice';
 import userReducer, { UserState } from './UserSlice';
-import inventoryReducer, { InventoryState } from './InventorySlice'
+import inventoryReducer, { InventoryState } from './InventorySlice';
+import orderReducer, { OrderState } from './OrderSlice'
 import logger from 'redux-logger';
 
 const persistConfig = {
@@ -30,11 +31,17 @@ const reducers = combineReducers({
   admin: loginReducer,
   users: userReducer,
   inventory: inventoryReducer,
+  orders: orderReducer,
 });
 
 const rootReducer = (
   state: CombinedState<
-    { admin: AdminState; users: UserState; inventory: InventoryState } | never | undefined
+    { 
+      admin: AdminState; 
+      users: UserState; 
+      inventory: InventoryState,
+      order: OrderState
+     } | never | undefined
   >,
   act: PayloadAction<unknown>,
 ) => {
