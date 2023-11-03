@@ -114,7 +114,7 @@ export function Login() {
                 onClick={() => {
                   setIsSeePassword(!isSeePassword);
                 }}
-                className="absolute cursor-pointer inset-y-0 right-14 top-28 flex items-center pr-3"
+                className="absolute cursor-pointer inset-y-0 right-14 top-56 flex items-center pr-3"
               >
                 {isSeePassword ? (
                   <img
