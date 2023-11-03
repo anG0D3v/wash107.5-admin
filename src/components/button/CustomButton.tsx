@@ -7,7 +7,7 @@ export type BtnProps = {
   children: ReactNode;
   disabled?: boolean;
   type?: BtnType;
-  onClick: () => void;
+  onClick?: () => void;
   addedClass?: string;
   icon?: React.ReactNode;
 };

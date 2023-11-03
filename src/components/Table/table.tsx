@@ -6,8 +6,8 @@ type TableProps = {
   headers: string[];
   data: any[];
   loading:boolean;
-  actionHeader: string;
-  actionValue: (item: any) => React.ReactNode;
+  actionHeader?: string;
+  actionValue?: (item: any) => React.ReactNode;
 };
 
 const DataTable: React.FC<TableProps> = ({ headers, data, actionHeader,loading, actionValue}) => {
@@ -65,7 +65,7 @@ const DataTable: React.FC<TableProps> = ({ headers, data, actionHeader,loading, 
                         </td>
                     ))}
                     <td className="px-3 py-4 text-sm text-gray-500">
-                        {actionValue(item)}
+                    {actionValue ? actionValue(item) : null}
                     </td>
                     </tr>
                 )))}
