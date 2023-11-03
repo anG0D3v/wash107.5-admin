@@ -85,7 +85,7 @@ export function Login() {
               className="z-10 flex flex-col items-center w-3/4 h-64 sm:h-94 absolute top-1/4 left-20 mt-4"
               action=""
             >
-              <h1 className="text-4xl text-charcoalBlack font-bold">
+              <h1 className="text-4xl text-charcoalBlack font-bold mt-12">
                 Welcome!
               </h1>
               <p className="text-charcoalBlack text-lg italic font-medium mb-6">
@@ -130,23 +130,6 @@ export function Login() {
                   />
                 )}
               </button>
-              <div className="sm:w-3/4 w-3/4 flex flex-col-reverse justify-end items-end">
-                <p className="text-charcoalBlack text-lg italic font-small text-center">
-                  Don&apos;t have Account?{' '}
-                  <a
-                    href={'/signup'}
-                    className="font-small underline underline-offset-4 transition-all hover:text-blue-500"
-                  >
-                    Sign Up
-                  </a>
-                </p>
-                <a
-                  href="/forgot-password"
-                  className="text-charcoalBlack text-lg italic font-medium transition-all hover:text-blue-500"
-                >
-                  Forget Password?
-                </a>
-              </div>
 
               <div className="text-center">
                 <button
