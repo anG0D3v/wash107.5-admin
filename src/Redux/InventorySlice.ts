@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { inventoryList } from '../types/global';
 
 export interface InventoryState {
-  filter(arg0: (data: any) => boolean): inventoryList[];
   data: inventoryList[] | null;
   loading: boolean;
   responseMsg: string | unknown;
