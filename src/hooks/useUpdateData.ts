@@ -6,7 +6,6 @@ export const updateData = async (
     dataToUpdate:any):
      Promise<void>  => {
     try {
-      console.log(dataToUpdate)
         const documentRef = doc(db, collectionName, documentId);
         await updateDoc(documentRef, dataToUpdate);
       } catch (error) {

@@ -122,7 +122,6 @@ function InventoryTable() {
 
   const handleOpen = (item: inventoryList | undefined) => {
     if(item){
-      console.log(item)
       setProductsDetails(item);
       setOpen('Edit');
     }else{
