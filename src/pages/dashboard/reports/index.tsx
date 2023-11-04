@@ -37,14 +37,11 @@ export function Reports() {
     }
   }
   const headerTable: string[] = [
-    "Order_Id",
     "Order_Type",
     "Order_Date",
     "Status",
     "Completed_On",
     "Has_Checklist",
-    "Checklist_Id",
-    "Client_Id",
     "Client_Name",
     "Address",
     "Phone_Number",
@@ -53,24 +50,18 @@ export function Reports() {
     "Load_Count",
     "Total_Price",
     "Payment_Method",
-    "Wash_Cycle_Id",
     "Wash_Cycle",
     "Wash_Cost",
-    "Dry_Cycle_Id",
     "Dry_Cycle",
     "Dry_Cost",
-    "Detergent_Id",
     "Detergent",
     "Detergent_Cost",
-    "Fabric_Conditioner_Id",
     "Fabric_Conditioner",
     "FabCon_Cost",
-    "Services_Id",
     "Services",
     "Service_Cost",
   ]
   const dataTable: OrderInfo[] = order?.data || [];
-  console.log(dataTable)
   const exportToExcel = () => {
     const ws = XLSX.utils.json_to_sheet(dataTable);
     const wb = XLSX.utils.book_new();
@@ -95,12 +86,17 @@ export function Reports() {
       Export to Excel
     </CustomButton>
     </div>
-
-        <DataTable
+    <div className='w-96'>
+      <div>
+        
+      </div>
+    <DataTable
         loading={order.loading}
         headers={headerTable}
         data={dataTable}
       />
+    </div>
+
   </div>
   </>);
 }

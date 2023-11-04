@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { CircularProgress, Typography } from '@mui/material';
 import Pagination from '../Pagination/pagination';
+import Chip from '@mui/material/Chip';
+import { BsCheck2 } from 'react-icons/bs';
+import { MdOutlineClear } from 'react-icons/md';
+
 
 type TableProps = {
   headers: string[];
@@ -22,7 +26,7 @@ const DataTable: React.FC<TableProps> = ({ headers, data, actionHeader,loading, 
       <div className="-mx-4 -my-2 overflow-x-auto md:overflow-visible sm:-mx-6 lg:-mx-8">
         <div className="inline-block min-w-full py-2 align-middle px-4 sm:px-6 lg:px-8">
           <div className="shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg mb-5">
-            <table className="min-w-full divide-y divide-gray-300">
+            <table className="min-w-full divide-y divide-gray-300 overflow-auto">
               <thead className="bg-gray-800 text-white">
                 <tr>
                   {headers.map((header, index) => (
@@ -59,6 +63,12 @@ const DataTable: React.FC<TableProps> = ({ headers, data, actionHeader,loading, 
                                 alt="Image"
                                 className="w-16 h-16 object-contain rounded-full"
                             />
+                            ) : header === 'Availability' ? (
+                              <Chip 
+                              color={item[header] === true ? "success" : "error"}
+                              label={item[header] === true ? "Available" : "Not Available"}
+                              icon={item[header] === true ? <BsCheck2/> : <MdOutlineClear/>}
+                              />
                             ) : (
                             item[header]
                             )}

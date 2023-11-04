@@ -1,7 +1,6 @@
 // Modal.tsx
 import React from 'react';
 import {
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -12,7 +11,7 @@ import {
 type ModalProps = {
   open: boolean;
   onClose: () => void;
-  title: string;
+  title?: string;
   content: React.ReactNode;
   actions: Array<{
     label: string;
@@ -23,16 +22,19 @@ type ModalProps = {
 
 const Modal: React.FC<ModalProps> = ({ open, onClose, title, content, actions }) => {
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog 
+    open={open} onClose={onClose}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>{content}</DialogContentText>
       </DialogContent>
       <DialogActions>
         {actions.map((action, index) => (
-          <Button className='normal-case' variant='contained' key={index} onClick={action.onClick} color={action.color}>
+          <button
+           className='normal-case bg-blue-500 mb-4 mr-6 text-white font-semibold py-2 px-4 rounded-[3px] shadow-md transition duration-300 ease-in-out transform hover:scale-105'
+            key={index} onClick={action.onClick}>
             {action.label}
-          </Button>
+          </button>
         ))}
       </DialogActions>
     </Dialog>
