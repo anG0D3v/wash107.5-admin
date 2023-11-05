@@ -38,9 +38,9 @@ function InventoryTable() {
     Description: '',
     Image_Url: '',
     Name: '',
-    Price: '0',
-    Duration: '0',
-    Quantity_In_Stock: '0',
+    Price: 0,
+    Duration: 0,
+    Quantity_In_Stock: 0,
   });
   const [productDetails, setProductsDetails] = useState({
     Availability: true,
@@ -48,10 +48,10 @@ function InventoryTable() {
     Description: '',
     Image_Url: '',
     Name: '',
-    Price: '',
-    Quantity_In_Stock: '',
+    Price: 0,
+    Quantity_In_Stock: 0,
     Inventory_Id: '',
-    Duration: ''
+    Duration: 0
   });
 
   
@@ -447,11 +447,21 @@ function InventoryTable() {
       productAdd.Image_Url
     ) {
       const check = category === 'Dry Cycle' || category === 'Wash Cycle' ? productAdd.Duration : productAdd.Quantity_In_Stock;
-      if(!check || check === '0'){
+      if(!check || check === 0){
         toast.error('No zero must be value')
         return
       }
-      if(category !== 'Service' && productAdd.Price === '0'){
+      if(check.toString().includes('.')){
+        let warn = '';
+        if(category === 'Dry Cycle' || category === 'Wash Cycle'){
+          warn += `No decimal places in Duration field`
+        }else{
+          warn += `No decimal places in Quantity fields`
+        }
+        toast.error(warn)
+        return
+      }
+      if(category !== 'Service' && productAdd.Price === 0){
         toast.error('No zero must be value')
         return
       }
@@ -464,9 +474,9 @@ function InventoryTable() {
         const productData = { 
           ...productAdd, 
           Image_Url: imageUrl, 
-          Price: parseFloat(productAdd.Price),
-          Quantity_In_Stock: parseFloat(productAdd.Quantity_In_Stock),
-          Duration: parseFloat(productAdd.Duration),
+          Price: Number(productAdd.Price),
+          Quantity_In_Stock: Number(productAdd.Quantity_In_Stock),
+          Duration: Number(productAdd.Duration),
          };
          let data;
          if(category === 'Service'){
@@ -523,9 +533,9 @@ function InventoryTable() {
     const productData = {
       ...productDetails, 
       Image_Url: imageUrl,
-      Price: parseFloat(productDetails.Price),
-      Quantity_In_Stock: parseFloat(productDetails.Quantity_In_Stock),
-      Duration: parseFloat(productDetails.Duration),
+      Price: Number(productDetails.Price),
+      Quantity_In_Stock: Number(productDetails.Quantity_In_Stock),
+      Duration: Number(productDetails.Duration),
       Last_Updated_By: updatedBy,
       Last_Updated_On: updatedOn,
     };
@@ -711,6 +721,8 @@ function InventoryTable() {
         Delete
       </CustomButton>,
   ];
+
+
   return (
     <>
       <BackdropLoading open={showBackdrop} />
