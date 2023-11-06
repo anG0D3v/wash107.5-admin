@@ -21,9 +21,9 @@ export type inventoryList = {
   Last_Updated_By: string;
   Last_Updated_On: string;
   Name: string;
-  Price: string;
-  Quantity_In_Stock: string;
-  Duration:string
+  Price: number;
+  Quantity_In_Stock: number;
+  Duration:number;
   id: string;
 };
 

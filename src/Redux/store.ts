@@ -46,7 +46,13 @@ const rootReducer = (
   act: PayloadAction<unknown>,
 ) => {
   if (act.type === 'admin/signOut') {
-    state = undefined;
+    state = {
+      ...state,
+      admin: {} as AdminState,
+      users: {} as UserState,
+      inventory: {} as InventoryState,
+      orders: {} as OrderState,
+    };
   }
   return reducers(state, act);
 };
