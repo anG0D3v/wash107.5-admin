@@ -10,17 +10,18 @@ import { RootState } from '../../../Redux/store';
 import DataTable from '../../../components/Table/table';
 import { fetchData } from '../../../hooks/useFetchData';
 import { OrderInfo } from '../../../types/global';
-import { 
-  filterByToday,
-  filterByThisMonth,
-  filterByThisWeek,
-  filterByThisYear } from '../../../config/annualRep';
+import dayjs, { Dayjs } from 'dayjs';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import DropdownSelect from '../../../components/Dropdown/dropdown';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
 export function Reports() {
   const dispatch = useDispatch();
+  const [value, setValue] = useState<Dayjs | null>(null);
   const order = useSelector((state: RootState) => state.orders);
   const dataTable: OrderInfo[] = order?.data || [];
   const [filteredData, setFilteredData] = useState<OrderInfo[]>(dataTable);
@@ -37,7 +38,7 @@ export function Reports() {
 
   useEffect(() =>{
       filtered()
-  },[sort])
+  },[sort,value])
 
   async function loadUsers() {
     try {
@@ -64,7 +65,7 @@ export function Reports() {
   ]
 
   const exportToExcel = () => {
-    const columnsToExport = filteredData.map((item) => ({
+    const columnsToExport = filteredData.map((item: { Order_Id: any; Client_Name: any; Order_Date: any; Order_Type: any; Total_Price: any; Payment_Method: any; Status: any; }) => ({
       Order_Id: item.Order_Id,
       Client_Name: item.Client_Name,
       Order_Date: item.Order_Date,
@@ -95,7 +96,6 @@ export function Reports() {
     {value:"" ,label:"All"},
     {value:"REGULAR" ,label:"Regular"},
     {value:"ADVANCE" ,label:"Advance"},
-    {value:"APP" ,label:"App"},
   ]
   const methodOpt =[
     {value:"" ,label:"All"},
@@ -105,46 +105,33 @@ export function Reports() {
   ]
   const statusOpt =[
     {value:"" ,label:"All"},
+    {value:"Pending" ,label:"Pending"},
     {value:"Cancelled" ,label:"Cancelled"},
     {value:"Completed" ,label:"Completed"},
     {value:"For Pickup & Processing" ,label:"For Pickup & Processing"},
-  ]
-  const dateOpt = [
-    {value:"" ,label:"All"},
-    { value: 'today', label: 'Today' },
-    { value: 'thisWeek', label: 'This Week' },
-    { value: 'thisMonth', label: 'This Month' },
-    { value: 'thisYear', label: 'This Year' },
+    {value:"In Laundy Process" ,label:"In Laundy Process"},
+    {value:"Servicing" ,label:"Servicing"},
+    {value:"Packaging" ,label:"Packaging"},
+    {value:"For Delivery" ,label:"For Delivery"},
+    {value:"In Transit" ,label:"In Transit"},
   ]
   const filtered = () => {
     const filtered = dataTable.filter((item) => {
+      const itemDate = dayjs(item.Order_Date);
       return (
         (sort.Order_Type === '' || item.Order_Type === sort.Order_Type) &&
         (sort.Payment_Method === '' || item.Payment_Method === sort.Payment_Method) &&
-        (sort.Status === '' || item.Status === sort.Status)
+        (sort.Status === '' || item.Status === sort.Status) &&
+        (!value || itemDate.isSame(value, 'day'))
       );
     });
-    switch (sort.Order_Date) {
-      case 'today':
-        setFilteredData(filterByToday(filtered));
-        break;
-      case 'thisWeek':
-        setFilteredData(filterByThisWeek(filtered));
-        break;
-      case 'thisMonth':
-        setFilteredData(filterByThisMonth(filtered));
-        break;
-      case 'thisYear':
-        setFilteredData(filterByThisYear(filtered));
-        break;
-      default:
-        setFilteredData(filtered);
-    }
+    setFilteredData(filtered);
+
   };
 
-  const handleOptionChange = ( value: string, name: string) => {
+  const handleOptionChange = ( value: string, name: string,) => {
 
-    setSort((prevSort) => ({
+    setSort((prevSort: any) => ({
       ...prevSort,
       [name]: value,
     }));
@@ -186,13 +173,27 @@ export function Reports() {
           name="Status"
           onChange={handleOptionChange}
     />  
-        <DropdownSelect
-          value={sort.Order_Date}
-          label="Sort by Date"
-          name='Order_Date'
-          options={dateOpt}
-          onChange={handleOptionChange}
-        />       
+    <div className='mt-1'>
+      <label htmlFor="" className="block text-gray-700 text-sm font-bold rounded-t-md">
+        Filter by Date
+      </label>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <DemoContainer components={['DatePicker']}>
+        <DatePicker
+          slotProps={{
+                    textField: {
+                    size: "small",
+                    error: false,
+                  },
+              }}
+          value={value}
+          views={['year', 'month', 'day']}
+          onChange={(newValue) => setValue(newValue)}
+        />
+      </DemoContainer>
+    </LocalizationProvider> 
+    </div>
+    
     </div>
     <div className='w-full'>
     <DataTable
