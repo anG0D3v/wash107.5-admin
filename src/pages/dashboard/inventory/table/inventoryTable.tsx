@@ -28,6 +28,7 @@ function InventoryTable() {
   const [open, setOpen] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const [imgPrev, setImagePrev] = useState('');
+  const [imgPrev1, setImagePrev1] = useState('');
   const [showBackdrop, setShowBackdrop] = useState(false);
   const [category,setCategory] = useState('Wash Cycle');
   const [productAdd, setProductsAdd] = useState({
@@ -89,11 +90,13 @@ function InventoryTable() {
         const file = files[0];
         const blob = new Blob([file], { type: file.type });
         const blobURL = URL.createObjectURL(blob);
-        setImagePrev(blobURL);
+        
         if(open === 'Edit'){
+          setImagePrev1(blobURL);
           setProductsDetails({ ...productDetails, [name]: file });
         }
         if(open === 'Add'){
+          setImagePrev(blobURL);
           setProductsAdd({ ...productAdd, [name]: file });
         }
 
@@ -121,8 +124,10 @@ function InventoryTable() {
   };
 
   const handleOpen = (item: inventoryList | undefined) => {
+   
     if(item){
-      setProductsDetails(item);
+      const { id, ...newproductDatawithId } = item;
+      setProductsDetails(newproductDatawithId);
       setOpen('Edit');
     }else{
       setOpen('Add')
@@ -158,7 +163,7 @@ function InventoryTable() {
         />
         <label htmlFor="" className="block text-gray-700 font-bold mt-2">Product Image</label>
         <img
-          src={imgPrev || productDetails.Image_Url}
+          src={imgPrev1 || productDetails.Image_Url}
           className="w-16 h-16 object-contain rounded-full"
           alt=""
         />
@@ -207,7 +212,7 @@ function InventoryTable() {
           type="number"
           value={productDetails.Quantity_In_Stock}
           name="Quantity_In_Stock"
-          placeholder="Quantity"
+          placeholder="Pieces"
           onChange={(e: {
             target: {
               files: any;
@@ -228,7 +233,7 @@ function InventoryTable() {
             type="number"
             value={productDetails.Duration}
             name="Duration"
-            placeholder="Quantity"
+            placeholder="Minutes"
             onChange={(e: {
               target: {
                 files: any;
@@ -365,7 +370,7 @@ function InventoryTable() {
           type="number"
           value={productAdd.Quantity_In_Stock}
           name="Quantity_In_Stock"
-          placeholder="Quantity"
+          placeholder="Pieces"
           onChange={(e: {
             target: {
               files: any;
@@ -386,7 +391,7 @@ function InventoryTable() {
             type="number"
             value={productAdd.Duration}
             name="Duration"
-            placeholder="Quantity"
+            placeholder="Minutes"
             onChange={(e: {
               target: {
                 files: any;
@@ -442,13 +447,22 @@ function InventoryTable() {
     if (
       productAdd.Name &&
       productAdd.Category &&
-      productAdd.Price &&
       productAdd.Description &&
       productAdd.Image_Url
     ) {
-      const check = category === 'Dry Cycle' || category === 'Wash Cycle' ? productAdd.Duration : productAdd.Quantity_In_Stock;
-      if(!check || check === 0){
-        toast.error('No zero must be value')
+      const productData = { 
+        ...productAdd, 
+        Price: Number(productAdd.Price),
+        Quantity_In_Stock: Number(productAdd.Quantity_In_Stock),
+        Duration: Number(productAdd.Duration),
+       };
+       if(productData.Duration < 0 || productData.Price < 0 || productData.Quantity_In_Stock < 0){
+        toast.error('Input value must not be negative')
+        return
+      }
+      const check = category === 'Dry Cycle' || category === 'Wash Cycle' ? productData.Duration : productData.Quantity_In_Stock;
+      if(!check || check === 0 || isNaN(check)){
+        toast.error('Input value must not be 0')
         return
       }
       if(check.toString().includes('.')){
@@ -461,22 +475,22 @@ function InventoryTable() {
         toast.error(warn)
         return
       }
-      if(category !== 'Service' && productAdd.Price === 0){
-        toast.error('No zero must be value')
+      if(category !== 'Service' && (productData.Price === 0 || isNaN(productData.Price) || !productData.Price)){
+        toast.error('Input value must not be 0')
         return
       }
-      const imageFile: any = productAdd.Image_Url;
-      const storagePath = `/inventoryItems/${imageFile.name}`;
       try {
         setOpen('');
         setShowBackdrop(true);
+        const imageFile: any = productAdd.Image_Url;
+        const storagePath = `/inventoryItems/${imageFile.name}`;
         const imageUrl = await uploadImageToStorage(imageFile, storagePath);
         const productData = { 
           ...productAdd, 
-          Image_Url: imageUrl, 
-          Price: Number(productAdd.Price),
-          Quantity_In_Stock: Number(productAdd.Quantity_In_Stock),
-          Duration: Number(productAdd.Duration),
+        Image_Url: imageUrl,
+        Price: Number(productAdd.Price),
+        Quantity_In_Stock: Number(productAdd.Quantity_In_Stock),
+        Duration: Number(productAdd.Duration),
          };
          let data;
          if(category === 'Service'){
@@ -501,6 +515,7 @@ function InventoryTable() {
         await updateData('inventoryTable', Inventory_Id,productDatawithId)
         .then(async () => {
           await loadInventory()
+          setImagePrev('')
           setShowBackdrop(false);
           toast.success('Added successfully.');
         })
@@ -520,7 +535,7 @@ function InventoryTable() {
   const handleEdit = async () => {
     let imageUrl = productDetails.Image_Url; 
   
-    if (imgPrev) {
+    if (imgPrev1) {
       const imageFile: any = productDetails.Image_Url;
       const storagePath = `/inventoryItems/${imageFile.name}`;
       imageUrl = await uploadImageToStorage(imageFile, storagePath);
@@ -529,8 +544,7 @@ function InventoryTable() {
     const updatedOn = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const updatedBy = admin.info?.id;
     const documentId = productDetails.Inventory_Id;
-
-    const productData = {
+    const productData1 = {
       ...productDetails, 
       Image_Url: imageUrl,
       Price: Number(productDetails.Price),
@@ -539,15 +553,39 @@ function InventoryTable() {
       Last_Updated_By: updatedBy,
       Last_Updated_On: updatedOn,
     };
+    if(category !== 'Service' && (productData1.Price === 0 || isNaN(productData1.Price) || !productData1.Price)){
+      toast.error('Input value must not be 0')
+      return
+    }
     let data;
+    if(productData1.Duration < 0 || productData1.Price < 0 || productData1.Quantity_In_Stock < 0){
+      toast.error('Input value must not be negative')
+      return
+    }
+    const check = category === 'Dry Cycle' || category === 'Wash Cycle' ? productData1.Duration : productData1.Quantity_In_Stock;
+    if(!check || check === 0 || isNaN(check)){
+      toast.error('Input value must not be 0')
+      return
+    }
+    if(check.toString().includes('.')){
+      let warn = '';
+      if(category === 'Dry Cycle' || category === 'Wash Cycle'){
+        warn += `No decimal places in Duration field`
+      }else{
+        warn += `No decimal places in Quantity fields`
+      }
+      toast.error(warn)
+      return
+    }
+
     if (category === 'Service') {
-      const { Quantity_In_Stock, Duration, ...newproductDatawithId } = productData;
+      const { Quantity_In_Stock, Duration, ...newproductDatawithId } = productData1;
       data = newproductDatawithId;
     } else if (category === 'Wash Cycle' || category === 'Dry Cycle') {
-      const { Quantity_In_Stock, ...newproductDatawithId } = productData;
+      const { Quantity_In_Stock, ...newproductDatawithId } = productData1;
       data = newproductDatawithId;
     } else if (category === 'Laundry Detergent' || category === 'Fabric Conditioner') {
-      const { Duration, ...newproductDatawithId } = productData;
+      const { Duration, ...newproductDatawithId } = productData1;
       data = newproductDatawithId;
     }
     setOpen('');
@@ -555,6 +593,7 @@ function InventoryTable() {
     await updateData('inventoryTable', documentId, data)
       .then(async () => {
         await loadInventory();
+        setImagePrev1('')
         setShowBackdrop(false);
         toast.success('Updated successfully');
       })
@@ -721,7 +760,8 @@ function InventoryTable() {
         Delete
       </CustomButton>,
   ];
-
+  const d = Math.round(productDetails.Price * 100) / 100;
+  console.log(d)
 
   return (
     <>

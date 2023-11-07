@@ -56,40 +56,54 @@ export function Reports() {
   }
   const headerTable: string[] = [
     "Order_Id",
-    "Client_Name",
-    "Order_Date",
     "Order_Type",
+    "Order_Date",
+    "Status",
+    "Completed_On",
+    "Has_Checklist",
+    "Checklist_Id",
+    "Client_Id",
+    "Client_Name",
+    "Address",
+    "Phone_Number",
+    "SMS_Request_Count",
+    "Total_Weight",
+    "Load_Count",
     "Total_Price",
     "Payment_Method",
-    "Status",
-  ]
+    "Wash_Cycle_Id",
+    "Wash_Cycle",
+    "Wash_Cost",
+    "Dry_Cycle_Id",
+    "Dry_Cycle",
+    "Dry_Cost",
+    "Detergent_Id",
+    "Detergent",
+    "Detergent_Cost",
+    "Fabric_Conditioner_Id",
+    "Fabric_Conditioner",
+    "FabCon_Cost",
+    "Services_Id",
+    "Services",
+    "Service_Cost",
+  ];
 
   const exportToExcel = () => {
-    const columnsToExport = filteredData.map((item: { Order_Id: any; Client_Name: any; Order_Date: any; Order_Type: any; Total_Price: any; Payment_Method: any; Status: any; }) => ({
-      Order_Id: item.Order_Id,
-      Client_Name: item.Client_Name,
-      Order_Date: item.Order_Date,
-      Order_Type: item.Order_Type,
-      Total_Price: item.Total_Price,
-      Payment_Method: item.Payment_Method,
-      Status: item.Status,
-    }));
-    const ws = XLSX.utils.json_to_sheet(columnsToExport);
-    ws['!cols'] = [
-      { wpx: 200 }, 
-      { wpx: 150 },
-      { wpx: 150 },
-      { wpx: 100 },
-      { wpx: 100 },
-      { wpx: 150 },
-      { wpx: 200 },
-    ];
+    const ws = XLSX.utils.json_to_sheet(filteredData);
+    const columnCount = Object.keys(filteredData[0] || {}).length; 
+    const defaultWidth = 200;
+    const columnWidths = Array(columnCount).fill({ wpx: defaultWidth });
+    ws['!cols'] = columnWidths;
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-  
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1; // Months are zero-based, so we add 1 to get the actual month
+    const day = today.getDate();
+    const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
     const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
     const dataBlob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    saveAs(dataBlob, 'exportedData.xlsx');
+    saveAs(dataBlob, `Wash 107.5-${formattedDate}.xlsx`);
   };
 
   const typeOpt =[
@@ -106,23 +120,24 @@ export function Reports() {
   const statusOpt =[
     {value:"" ,label:"All"},
     {value:"Pending" ,label:"Pending"},
-    {value:"Cancelled" ,label:"Cancelled"},
-    {value:"Completed" ,label:"Completed"},
     {value:"For Pickup & Processing" ,label:"For Pickup & Processing"},
     {value:"In Laundy Process" ,label:"In Laundy Process"},
     {value:"Servicing" ,label:"Servicing"},
     {value:"Packaging" ,label:"Packaging"},
     {value:"For Delivery" ,label:"For Delivery"},
     {value:"In Transit" ,label:"In Transit"},
+    {value:"Cancelled" ,label:"Cancelled"},
+    {value:"Completed" ,label:"Completed"},
   ]
   const filtered = () => {
     const filtered = dataTable.filter((item) => {
       const itemDate = dayjs(item.Order_Date);
+
       return (
         (sort.Order_Type === '' || item.Order_Type === sort.Order_Type) &&
         (sort.Payment_Method === '' || item.Payment_Method === sort.Payment_Method) &&
         (sort.Status === '' || item.Status === sort.Status) &&
-        (!value || itemDate.isSame(value, 'day'))
+        (itemDate.isSame(value, 'day'))
       );
     });
     setFilteredData(filtered);
@@ -139,7 +154,7 @@ export function Reports() {
   return (
     <>
   <div>
-    <div className='flex justify-between'>
+    <div className='flex w-2/3 justify-between'>
     <h1 className="text-4xl font-extrabold text-blue-700 tracking-wide">
         Reports
     </h1>
@@ -151,7 +166,7 @@ export function Reports() {
     </CustomButton>
     </div>
     <div className='flex w-full flex-col mt-10'>
-    <div className='w-full h-22 flex justify-between'>
+    <div className='w-3/4 h-22 flex justify-between'>
     <DropdownSelect
           value={sort.Order_Type}
           label="Filter by Order Type"
@@ -173,7 +188,7 @@ export function Reports() {
           name="Status"
           onChange={handleOptionChange}
     />  
-    <div className='mt-1'>
+    <div className='mt-1.5'>
       <label htmlFor="" className="block text-gray-700 text-sm font-bold rounded-t-md">
         Filter by Date
       </label>
@@ -195,7 +210,7 @@ export function Reports() {
     </div>
     
     </div>
-    <div className='w-full'>
+    <div className='w-5/6 overflow-x-auto'>
     <DataTable
         loading={order.loading}
         headers={headerTable}
