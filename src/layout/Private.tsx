@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../Redux/store';
 import clsx from 'clsx';
 import { BiSolidReport } from 'react-icons/bi';
-import { MdInventory, MdDashboard } from 'react-icons/md';
+import { MdInventory } from 'react-icons/md';
 import { FaUsers } from 'react-icons/fa6';
 import { RiSettings2Fill } from 'react-icons/ri';
 import { PiSignOutBold } from 'react-icons/pi';
@@ -17,12 +17,12 @@ export default function Private() {
   const dispatch = useDispatch();
   const admin = useSelector((state: RootState) => state.admin);
   const links = [
-    {
-      id: 0,
-      name: 'Dashboard',
-      url: RouteUrl.DASHBOARD,
-      icon: <MdDashboard />,
-    },
+    // {
+    //   id: 0,
+    //   name: 'Dashboard',
+    //   url: RouteUrl.DASHBOARD,
+    //   icon: <MdDashboard />,
+    // },
     {
       id: 1,
       name: 'Inventory',
@@ -40,7 +40,7 @@ export default function Private() {
   ];
 
   const [selectedMenu, setSelectedMenu] = useState({
-    id: 0,
+    id: 1,
   }) as any;
 
   const onSelectedMenu = useCallback((item: any) => {

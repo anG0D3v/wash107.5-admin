@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { ReactNode } from 'react';
+import React, { MouseEventHandler, ReactNode } from 'react';
 
 type BtnType = 'primary' | 'secondary' | 'transparent' | 'link';
 
@@ -7,7 +7,7 @@ export type BtnProps = {
   children: ReactNode;
   disabled?: boolean;
   type?: BtnType;
-  onClick?: () => void;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   addedClass?: string;
   icon?: React.ReactNode;
 };
