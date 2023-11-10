@@ -31,9 +31,20 @@ const userSlice = createSlice({
       loading: false,
       responseMsg: act.payload,
     }),
+    updateUsersFulfilled: (state, act: PayloadAction<UserInfo>) => ({
+      ...state,
+      loading: false,
+      data: (state.data ?? []).map((user) =>
+        user.id === act.payload.id ? act.payload : user,
+      ),
+    }),
   },
 });
 
-export const { getUsersPending, getUsersFulfilled, getUsersFailed } =
-  userSlice.actions;
+export const {
+  getUsersPending,
+  getUsersFulfilled,
+  getUsersFailed,
+  updateUsersFulfilled,
+} = userSlice.actions;
 export default userSlice.reducer;

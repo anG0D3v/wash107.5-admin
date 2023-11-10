@@ -12,6 +12,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../Redux/store';
 import { CustomButton } from '../../../components';
 import DataTable from '../../../components/Table/table';
+import { updateData } from '../../../hooks/useUpdateData';
+import toast, { Toaster } from 'react-hot-toast';
 
 export function Users() {
   const dispatch = useDispatch();
@@ -35,31 +37,42 @@ export function Users() {
     }
   }
 
-  const handleVerify = async() =>{
-    console.log('dsd')
-  }
+  const handleVerify = async (item: UserInfo) => {
+    const updatedInfo = { ...item, Verified: !item.Verified };
+    await updateData('userTable', item.id, updatedInfo)
+      .then(async () => {
+        await loadUsers();
+        toast.success('Verified successfully.');
+      })
+      .catch((error) => {
+        console.error('Error updating document: ', error);
+      });
+  };
 
   const headerTable: string[] = [
-    "Client_Id",
-    "First_Name",
-    "Last_Name",
-    "Email_Address",
-    "Phone_Number",
-    "Registration_Date",
-    "Address"
-  ]
+    'Client_Id',
+    'First_Name',
+    'Last_Name',
+    'Email_Address',
+    'Phone_Number',
+    'Registration_Date',
+    'Address',
+    'Verified',
+  ];
   const dataTable: UserInfo[] = users?.data || [];
-  const actionValue = () =>[
+  const actionValue = (item: UserInfo) => [
     <CustomButton
-    addedClass='mr-3 px-5'
-    type="secondary" 
-    onClick={() => handleVerify()}
+      addedClass="mr-3 px-5"
+      type="secondary"
+      onClick={() => handleVerify(item)}
+      disabled={item.Verified}
     >
-      Verify
-    </CustomButton>
-];
+      {item.Verified ? 'Verified' : 'Verify'}
+    </CustomButton>,
+  ];
   return (
     <div>
+      <Toaster />
       <Typography variant="h4" className="font-semibold">
         Users
       </Typography>
@@ -67,7 +80,7 @@ export function Users() {
         loading={users.loading}
         headers={headerTable}
         data={dataTable}
-        actionHeader="Actions" 
+        actionHeader="Actions"
         actionValue={actionValue}
       />
     </div>
