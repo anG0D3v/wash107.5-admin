@@ -20,6 +20,7 @@ import loginReducer, { AdminState } from './loginSlice';
 import userReducer, { UserState } from './UserSlice';
 import inventoryReducer, { InventoryState } from './InventorySlice';
 import orderReducer, { OrderState } from './OrderSlice';
+import announcementReducer, { AnnouncementState } from './announcementSlice';
 import logger from 'redux-logger';
 
 const persistConfig = {
@@ -32,17 +33,19 @@ const reducers = combineReducers({
   users: userReducer,
   inventory: inventoryReducer,
   orders: orderReducer,
+  announcement: announcementReducer
 });
 
 const rootReducer = (
-  state:
-    | CombinedState<{
-        admin: AdminState;
-        users: UserState;
-        inventory: InventoryState;
-        orders: OrderState;
-      }>
-    | undefined,
+  state: CombinedState<
+    { 
+      admin: AdminState; 
+      users: UserState; 
+      inventory: InventoryState;
+      orders: OrderState;
+      announcement: AnnouncementState;
+     }
+  > | undefined,
   act: PayloadAction<unknown>,
 ) => {
   if (act.type === 'admin/signOut') {
@@ -52,7 +55,8 @@ const rootReducer = (
       users: {} as UserState,
       inventory: {} as InventoryState,
       orders: {} as OrderState,
-    };
+      announcement: {} as AnnouncementState
+   };
   }
   return reducers(state, act);
 };
