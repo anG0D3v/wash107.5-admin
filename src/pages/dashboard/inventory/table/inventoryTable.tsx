@@ -760,8 +760,7 @@ function InventoryTable() {
         Delete
       </CustomButton>,
   ];
-  const d = Math.round(productDetails.Price * 100) / 100;
-  console.log(d)
+
 
   return (
     <>

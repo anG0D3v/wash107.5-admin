@@ -4,6 +4,6 @@ export const RouteUrl = {
   INVENTORY: '/dashboard/inventory',
   REPORTS: '/dashboard/reports',
   USERS: '/dashboard/users',
-  MAINTENANCE: '/dashboard/maitenance',
+  MAINTENANCE: '/dashboard/maintenance',
   ERROR: '/*',
 };

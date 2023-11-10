@@ -15,6 +15,7 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { formatCurrency } from '../../../config/pesoSign';
 import DropdownSelect from '../../../components/Dropdown/dropdown';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
@@ -26,10 +27,10 @@ export function Reports() {
   const dataTable: OrderInfo[] = order?.data || [];
   const [filteredData, setFilteredData] = useState<OrderInfo[]>(dataTable);
   const[sort,setSort] = useState({
-    Order_Type: '',
-    Payment_Method:'',
-    Status:'',
-    Order_Date: ''
+    Order_Type: "",
+    Payment_Method:"",
+    Status:"",
+    Order_Date: ""
   })
 
   useEffect(() => {
@@ -37,8 +38,8 @@ export function Reports() {
   }, []);
 
   useEffect(() =>{
-      filtered()
-  },[sort,value])
+      filtered();
+  },[sort,value,dataTable])
 
   async function loadUsers() {
     try {
@@ -132,29 +133,41 @@ export function Reports() {
   const filtered = () => {
     const filtered = dataTable.filter((item) => {
       const itemDate = dayjs(item.Order_Date);
-
-      return (
-        (sort.Order_Type === '' || item.Order_Type === sort.Order_Type) &&
-        (sort.Payment_Method === '' || item.Payment_Method === sort.Payment_Method) &&
-        (sort.Status === '' || item.Status === sort.Status) &&
-        (itemDate.isSame(value, 'day'))
-      );
+      const ordermatch = sort.Order_Type === "" || item.Order_Type === sort.Order_Type;
+      const methodmatch = sort.Payment_Method === "" || item.Payment_Method === sort.Payment_Method;
+      const statusmatch = sort.Status === "" || item.Status === sort.Status;
+      const dateMatch = value ? itemDate.isSame(value, 'day') : true;
+      return ordermatch && methodmatch && statusmatch && dateMatch;
     });
     setFilteredData(filtered);
 
   };
 
-  const handleOptionChange = ( value: string, name: string,) => {
-
+  const handleOptionChange = (value: string, name: string) => {
     setSort((prevSort: any) => ({
       ...prevSort,
       [name]: value,
     }));
   };
+
+  function calculateTotalPrice(orders: any[]) {
+    let totalPrice = 0;
+    orders.forEach(order => {
+      if (order.Total_Price) {
+        totalPrice += parseFloat(order.Total_Price);
+      }
+    });
+  
+    return totalPrice.toFixed(2);
+  }
+  const completed = dataTable?.filter(data => data.Status === 'Completed')
+  const total = Number(calculateTotalPrice(completed));
+  const formatTotal = formatCurrency(total)
+
   return (
     <>
   <div>
-    <div className='flex w-2/3 justify-between'>
+    <div className='flex w-3/4 justify-between'>
     <h1 className="text-4xl font-extrabold text-blue-700 tracking-wide">
         Reports
     </h1>
@@ -166,7 +179,7 @@ export function Reports() {
     </CustomButton>
     </div>
     <div className='flex w-full flex-col mt-10'>
-    <div className='w-3/4 h-22 flex justify-between'>
+    <div className='w-4/5 h-22 flex justify-between'>
     <DropdownSelect
           value={sort.Order_Type}
           label="Filter by Order Type"
@@ -210,7 +223,10 @@ export function Reports() {
     </div>
     
     </div>
-    <div className='w-5/6 overflow-x-auto'>
+    <div>
+      <h1 className='mt-6'><strong>Total Income:</strong> {formatTotal}</h1>
+    </div>
+    <div className='w-5/6 h-full overflow-x-auto'>
     <DataTable
         loading={order.loading}
         headers={headerTable}

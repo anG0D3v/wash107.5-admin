@@ -27,6 +27,15 @@ export type inventoryList = {
   Duration: number;
   id: string;
 };
+export type AnnouncementInfo = {
+  Announcement_Id:string;
+  Announcement_Name:string;
+  Created_By:string;
+  Created_On:string;
+  Image_Url:string;
+  Visibility:boolean;
+  id: string;
+}
 
 export type OrderInfo = {
   Order_Id: string;
@@ -62,3 +71,5 @@ export type OrderInfo = {
   Service_Cost: string;
   id: string;
 };
+
+

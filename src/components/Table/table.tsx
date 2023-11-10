@@ -33,7 +33,7 @@ const DataTable: React.FC<TableProps> = ({
       <div className="-mx-4 -my-2 md:overflow-visible sm:-mx-6 lg:-mx-8">
         <div className="inline-block min-w-full py-2 align-middle px-4 sm:px-6 lg:px-8">
           <div className="shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg mb-5">
-            <table className="min-w-full divide-y divide-gray-300 ">
+            <table className="min-w-full min-h-32 divide-y divide-gray-300 ">
               <thead className="bg-gray-800 text-white">
                 <tr>
                   {headers.map((header, index) => (
@@ -71,7 +71,7 @@ const DataTable: React.FC<TableProps> = ({
                           key={dataIndex}
                           className="px-3 py-4 text-sm text-gray-500"
                         >
-                          {header === 'Image' ? (
+                          {header === 'Image' || header === 'Image_Url' ? (
                             <img
                               src={item.Image_Url}
                               alt="Image"
@@ -112,7 +112,26 @@ const DataTable: React.FC<TableProps> = ({
                                 {item[header] ? 'Verified' : 'Not yet verified'}
                               </span>
                             </>
-                          ) : (
+                          ) : header ==='Visibility' ? (
+                            <Chip
+                            color={
+                              item[header] === true ? 'success' : 'error'
+                            }
+                            label={
+                              item[header] === true
+                                ? 'Visible'
+                                : 'Not Visible'
+                            }
+                            icon={
+                              item[header] === true ? (
+                                <BsCheck2 />
+                              ) : (
+                                <MdOutlineClear />
+                              )
+                            }
+                          />
+                            )
+                            : (
                             item[header]
                           )}
                         </td>
