@@ -8,7 +8,7 @@ import { RootState } from '../Redux/store';
 export default function Public() {
   const admin = useSelector((state: RootState) => state.admin);
   return !_.isNil(admin.info) ? (
-    <Navigate to={RouteUrl.DASHBOARD} replace />
+    <Navigate to={RouteUrl.INVENTORY} replace />
   ) : (
     <Outlet />
   );

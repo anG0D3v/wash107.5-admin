@@ -48,7 +48,7 @@ export function Login() {
         if (checkuser.Password === userData.password) {
           toast('Login successful!');
           dispatch(setAdmin(checkuser));
-          navigate(RouteUrl.DASHBOARD);
+          navigate(RouteUrl.INVENTORY);
         } else {
           toast('Incorrect password. Please try again.');
         }
@@ -102,7 +102,7 @@ export function Login() {
               />
               <input
                 className="text-black mt-2 placeholder:text-lg placeholder:italic placeholder:text-charcoalBlack placeholder:font-light block bg-white w-4/5 border border-vividOrange rounded py-4 px-5 shadow-sm focus:outline-none focus:border-vividOrange focus:ring-vividOrange focus:ring-1 sm:text-sm mb-4"
-                type={isSeePassword ? "text" : "password"}
+                type={isSeePassword ? 'text' : 'password'}
                 placeholder="Password"
                 value={userData.password}
                 onChange={(e) =>

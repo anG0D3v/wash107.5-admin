@@ -20,7 +20,7 @@ import loginReducer, { AdminState } from './loginSlice';
 import userReducer, { UserState } from './UserSlice';
 import inventoryReducer, { InventoryState } from './InventorySlice';
 import orderReducer, { OrderState } from './OrderSlice';
-import announcementReducer, { AnnouncementState } from './announcementSlice'
+import announcementReducer, { AnnouncementState } from './announcementSlice';
 import logger from 'redux-logger';
 
 const persistConfig = {
@@ -44,8 +44,8 @@ const rootReducer = (
       inventory: InventoryState;
       orders: OrderState;
       announcement: AnnouncementState;
-     } | never | undefined
-  >,
+     }
+  > | undefined,
   act: PayloadAction<unknown>,
 ) => {
   if (act.type === 'admin/signOut') {

@@ -1,15 +1,7 @@
 import React from 'react';
 import { RouteUrl } from './routes';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import {
-  Dashboard,
-  Error,
-  Inventory,
-  Login,
-  Maintenance,
-  Reports,
-  Users,
-} from './pages';
+import { Error, Inventory, Login, Maintenance, Reports, Users } from './pages';
 import { Public, Private } from './layout';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -33,10 +25,10 @@ export default function App() {
       element: <Private />,
       errorElement: <Error />,
       children: [
-        {
-          path: RouteUrl.DASHBOARD,
-          element: <Dashboard />,
-        },
+        // {
+        //   path: RouteUrl.DASHBOARD,
+        //   element: <Dashboard />,
+        // },
         {
           path: RouteUrl.INVENTORY,
           element: <Inventory />,
