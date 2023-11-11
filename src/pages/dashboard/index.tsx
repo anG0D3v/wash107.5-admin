@@ -1,16 +1,11 @@
 import React, { useEffect } from 'react';
 import { RootState } from '../../Redux/store';
-import { OrderInfo, UserInfo, inventoryList,AnnouncementInfo } from '../../types/global';
+import { OrderInfo, UserInfo,AnnouncementInfo } from '../../types/global';
 import { 
   getOrderPending,
   getOrderFulfilled,
   getOrderFailed
  } from '../../Redux/OrderSlice';
-import { 
-  getInventoryPending,
-  getInventoryFulfilled,
-  getInventoryFailed
- } from '../../Redux/InventorySlice';
 import { 
   getUsersPending,
   getUsersFulfilled,
@@ -32,17 +27,14 @@ import CustomCard from '../../components/Card/card';
 export function Dashboard() {
   const dispatch = useDispatch();
   const order = useSelector((state: RootState) => state.orders);
-  const inventory = useSelector((state: RootState) => state.inventory);
   const user = useSelector((state: RootState) => state.users);
   const announcement = useSelector((state: RootState) => state.announcement);
   const dataTable1: OrderInfo[] = order?.data || [];
-  const dataTable2: inventoryList[] = inventory?.data || [];
   const dataTable3: UserInfo[] = user?.data || [];
   const dataTable4: AnnouncementInfo[] = announcement?.data || [];
 
   useEffect(() => {
     loadOrdered();
-    loadInventory();
     loadUser();
     loadAnnouncement();
   }, []);
@@ -61,20 +53,7 @@ export function Dashboard() {
       dispatch(getOrderFailed(error));
     }
   }
-    async function loadInventory() {
-    try {
-      dispatch(getInventoryPending());
-      const data = (await fetchData('inventoryTable')) as inventoryList[];
-      data?.shift()
-      dispatch(
-        getInventoryFulfilled(
-          data,
-        ),
-      );
-    } catch (error) {
-      dispatch(getInventoryFailed(error));
-    }
-  }
+
     async function loadUser() {
     try {
       dispatch(getUsersPending());
