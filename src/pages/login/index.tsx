@@ -48,7 +48,7 @@ export function Login() {
         if (checkuser.Password === userData.password) {
           toast('Login successful!');
           dispatch(setAdmin(checkuser));
-          navigate(RouteUrl.INVENTORY);
+          navigate(RouteUrl.DASHBOARD);
         } else {
           toast('Incorrect password. Please try again.');
         }

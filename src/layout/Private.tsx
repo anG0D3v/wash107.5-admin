@@ -40,7 +40,7 @@ export default function Private() {
   ];
 
   const [selectedMenu, setSelectedMenu] = useState({
-    id: 1,
+    id: 0,
   }) as any;
 
   const onSelectedMenu = useCallback((item: any) => {
