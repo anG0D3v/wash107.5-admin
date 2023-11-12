@@ -1,4 +1,3 @@
-import { Typography } from '@mui/material';
 import React, { useEffect } from 'react';
 import { fetchData } from '../../../hooks/useFetchData';
 import { UserInfo } from '../../../types/global';
@@ -73,9 +72,9 @@ export function Users() {
   return (
     <div>
       <Toaster />
-      <Typography variant="h4" className="font-semibold">
+      <h1 className="text-4xl font-extrabold text-gray-700 tracking-wide mb-4">
         Users
-      </Typography>
+      </h1>
       <DataTable
         loading={users.loading}
         headers={headerTable}

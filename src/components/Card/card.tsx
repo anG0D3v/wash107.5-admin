@@ -9,7 +9,7 @@ interface CustomCardProps {
 }
 
 const CustomCard: React.FC<CustomCardProps & CardProps> = ({ data, iconSrc, children }) => (
-  <Card className="flex flex-col flex-1 flex-basis-[calc(33.33%-20px)] min-w-[200px] max-w-[calc(50%-20px)] h-[200px] p-5 m-5 relative rounded-5 border-8 ">
+  <Card className="flex flex-col flex-1 flex-basis-[calc(33.33%-20px)] min-w-[200px] max-w-[calc(50%-20px)] h-[200px] p-5 my-5 mr-2 relative rounded-5 border-8 ">
     {iconSrc && (
       <img
         className="absolute w-24 right-2"

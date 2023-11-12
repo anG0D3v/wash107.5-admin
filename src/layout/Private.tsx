@@ -56,8 +56,8 @@ export default function Private() {
   ) : (
     <div className="flex">
       {/* Sidebar */}
-      <div className="bg-pink-700 w-60 h-screen text-white flex flex-col justify-between ">
-        <div className="w-full">
+      <div className="bg-pink-700 w-60 min-w-60 h-screen text-white flex flex-col justify-between ">
+        <div className="w-60">
           <div className="w-full p-5">
             <h3 className="">Hello,</h3>
             <h1 className="text-white text-2xl truncate font-extrabold">
@@ -101,9 +101,9 @@ export default function Private() {
       {/* Body */}
       <div className="flex h-screen flex-1 w-screen flex-col">
         <nav>
-          <h1 className="bg-gray-800 text-white p-5">Welcome</h1>
+          <h1 className="bg-gray-800 text-white h-16"></h1>
         </nav>
-        <div className="p-5 overflow-y-auto overflow-x-hidden">
+        <div className="p-5 h-max overflow-y-auto">
           <Outlet />
         </div>
       </div>

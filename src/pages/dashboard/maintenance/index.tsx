@@ -235,9 +235,9 @@ export function Maintenance() {
   />
   <div className="text-black">
     <div className='flex justify-between items-center mt-2'>
-    <h1>Maintenance</h1>
+    <h1 className="text-4xl font-extrabold text-gray-700 tracking-wide mb-4">Maintenance</h1>
     <button onClick={handleOpen} className='text-white font-semibold py-2 px-4 rounded-[3px] shadow-md transition duration-300 ease-in-out transform hover:scale-105 bg-blue-700'>
-      Create Announcement
+      Post an Announcement
     </button>
     </div>
 

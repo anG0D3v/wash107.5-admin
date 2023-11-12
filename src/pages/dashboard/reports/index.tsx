@@ -165,10 +165,10 @@ export function Reports() {
   const formatTotal = formatCurrency(total)
 
   return (
-    <>
-  <div>
-    <div className='flex w-3/4 justify-between'>
-    <h1 className="text-4xl font-extrabold text-blue-700 tracking-wide">
+<>
+  <div className='text-black flex flex-col w-full justify-between h-auto'>
+    <div className='flex justify-between w-4/5'>
+    <h1 className="text-4xl font-extrabold text-gray-700 tracking-wide">
         Reports
     </h1>
     <CustomButton 
@@ -178,8 +178,8 @@ export function Reports() {
       Export to Excel
     </CustomButton>
     </div>
-    <div className='flex w-full flex-col mt-10'>
-    <div className='w-4/5 h-22 flex justify-between'>
+    <div className='flex flex-col mt-10 w-10/12'>
+    <div className='flex justify-between'>
     <DropdownSelect
           value={sort.Order_Type}
           label="Filter by Order Type"
@@ -226,7 +226,7 @@ export function Reports() {
     <div>
       <h1 className='mt-6'><strong>Total Income:</strong> {formatTotal}</h1>
     </div>
-    <div className='w-5/6 h-full overflow-x-auto'>
+    <div className='overflow-x-auto'>
     <DataTable
         loading={order.loading}
         headers={headerTable}
@@ -235,5 +235,6 @@ export function Reports() {
     </div>
     </div>
   </div>
-  </>);
+</>
+);
 }

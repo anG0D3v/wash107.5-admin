@@ -37,7 +37,7 @@ export function Dashboard() {
   const order = useSelector((state: RootState) => state.orders);
   const user = useSelector((state: RootState) => state.users);
   const inventory = useSelector((state: RootState) => state.inventory);
-  const [select,setSelected] = useState('')
+  const [select,setSelected] = useState('Wash Cycle')
   const [pieStat, setPieStat] = useState<{
     Pending: number;
     For_Pickup_Processing: number;
@@ -214,14 +214,20 @@ export function Dashboard() {
 
   return (
   <>
-    <div className="flex flex-col w-full h-max overflow-y-auto p-4 rounded-5 border-8">
-          <h1 className='mb-4'>Recent Visible Announcement</h1>
-          <div className='flex overflow-x-auto h-80 whitespace-nowrap justify-center items-center gap-4'>
+  <div>
+  <h1 className="text-4xl font-extrabold text-gray-700 tracking-wide mb-4 ">Dashboard</h1>
+    <div className="flex flex-col w-full h-max overflow-x-auto p-4 rounded-5 border-8 justify-center items-center">
+      <div className='w-full'>
+      <h1 className="text-2xl font-extrabold text-gray-700 tracking-wide mb-4">Visible Announcements</h1>
+      </div>
+         
+          <div className='flex overflow-x-auto h-max whitespace-nowrap justify-center items-center w-2/3 gap-4'>
           {filteredAnnouncements?.map((data,index) =>{
             if(!data){return null;}
               else{
                 return (
-              <div className='flex-none w-86 h-80 border p-2 box-border' key={index}>
+              <div className='flex-none w-86 h-80 border p-2 box-border'
+               key={index}>
                 <img
                 className='w-full h-64 max-h-64 object-contain'
                  src={data.Image_Url}
@@ -231,27 +237,30 @@ export function Dashboard() {
           }
           })}
           </div>
-      </div>
+    </div>
     <div className="flex flex-wrap">
     <CustomCard data={totalCompleted} iconSrc={CompletedIcon}>
-        Total Completed Orders
+        Completed Orders
     </CustomCard>
     <CustomCard data={totalCancelled} iconSrc={CancelIcon}>
-        Total Cancelled Orders
+        Cancelled Orders
     </CustomCard>
     <CustomCard data={totalVerified} iconSrc={VerifiedIcon}>
-        Total Verified Users
+        Verified Users
     </CustomCard>
     <CustomCard data={totalNot} iconSrc={NotVerifiedIcon}>
-        Total Not Verified Users
+        Not Verified Users
     </CustomCard>
     </div>
     <hr />
-        <div  className="w-3/5 h-max p-5 m-5 relative rounded-5 border-8">
-        <h1>Current Orders</h1>
+    <div className='flex justify-center items-center w-full'>
+    <div  className="w-10/12 h-max p-5 m-5 relative flex flex-col justify-center items-center rounded-5 border-8">
+        <h1 className="text-4xl font-extrabold text-gray-700 tracking-wide mb-4">Current Orders</h1>
         <Piecharts data={pieChartData} />
-        </div>
-        <div>
+    </div>
+    </div>
+    <hr />
+    <div>
         <DropdownSelect
           value={select}
           label="Choose Category"
@@ -262,7 +271,8 @@ export function Dashboard() {
         <Barcharts data={resultBarData} />
         </div>
 
-        </div>
+    </div>
+  </div>
   </>
   );
 }

@@ -9,7 +9,7 @@ export function Inventory() {
     <>
       <div className="text-black flex flex-col w-full justify-between h-auto">
         <div className="text-black flex w-full justify-between">
-        <h1 className="text-4xl font-extrabold text-blue-700 tracking-wide">
+        <h1 className="text-4xl font-extrabold text-gray-700 tracking-wide">
           Inventory
         </h1>
         </div>

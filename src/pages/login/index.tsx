@@ -62,74 +62,87 @@ export function Login() {
   return (
     <>
       <Toaster position="top-center" reverseOrder={false} />
-      <div className="text-primary relative w-screen h-screen">
+      <div className="flex justify-center items-center px-6 h-screen relative">
+        <div className='relative'>
         <img
-          className="hidden md:flex md:basis-1/2 absolute right-8 top-98 bottom-0 z-negative-10"
+          className="w-42 h-34 object-cover hidden md:flex md:basis-1/2 absolute -left-64 -bottom-20 -z-10"
           src={jeepLogo}
           alt=""
         />
         <img
-          className="hidden md:flex md:basis-1/2 absolute left-10 top-98 bottom-0 z-negative-10"
+          className="w-46 h-34 object-cover hidden md:flex md:basis-1/2 absolute -right-72 -bottom-20 -z-10"
           src={jeepLogo}
           alt=""
         />
-        <div className="sm:h-2/3 absolute top-1/4 left-1/4 w-4/5 sm:w-1/2 bg-gray-800 h-96  rounded-md">
-          <div className="relative w-94 h-max">
+        <div className=" px-8 py-10 sm:pt-12 pb-20 rounded-xl bg-gray-800 shadow-lg outline-none z-10 ">
+
+          <div className="md:basis-1/2 sm:w-[500px] relative flex justify-center items-center flex-col">
             <img
-              className="w-32 absolute -left-7 -top-7 border-8 border-solid border-white rounded-full"
+              className="w-32 absolute left- -top-24 border-8 border-solid border-white rounded-full"
               src={laundryLogo}
               alt=""
             />
-            <form
-              onSubmit={handleSumbmit}
-              className="z-10 flex flex-col items-center w-3/4 h-64 sm:h-94 absolute top-1/4 left-20 mt-4"
-              action=""
-            >
-              <h1 className="text-4xl text-charcoalBlack font-bold mt-12">
+              <h1 className="text-4xl text-white font-bold mt-12">
                 Welcome!
               </h1>
-              <p className="text-charcoalBlack text-lg italic font-medium mb-6">
+              <p className="text-white text-lg italic font-medium mb-6">
                 Login to continue
               </p>
-              <input
-                className="mt-2 placeholder:text-lg placeholder:italic text-black placeholder:font-light block bg-white w-4/5 border border-vividOrange rounded py-4 px-5 shadow-sm focus:outline-none focus:border-vividOrange focus:ring-vividOrange focus:ring-1 sm:text-sm"
-                type="email"
-                placeholder="Email"
-                value={userData.username}
-                onChange={(e) =>
-                  setUserData({ ...userData, username: e.target.value })
-                }
-              />
-              <input
-                className="text-black mt-2 placeholder:text-lg placeholder:italic placeholder:text-charcoalBlack placeholder:font-light block bg-white w-4/5 border border-vividOrange rounded py-4 px-5 shadow-sm focus:outline-none focus:border-vividOrange focus:ring-vividOrange focus:ring-1 sm:text-sm mb-4"
-                type={isSeePassword ? 'text' : 'password'}
-                placeholder="Password"
-                value={userData.password}
-                onChange={(e) =>
-                  setUserData({ ...userData, password: e.target.value })
-                }
-              />
-              <button
-                type="button"
-                onClick={() => {
-                  setIsSeePassword(!isSeePassword);
-                }}
-                className="absolute cursor-pointer inset-y-0 right-14 top-56 flex items-center pr-3"
-              >
-                {isSeePassword ? (
-                  <img
-                    src={Eyeicon}
-                    className="h-5 w-5 text-gray-400"
-                    aria-hidden="true"
-                  />
-                ) : (
-                  <img
-                    src={Eyeslasesicon}
-                    className="h-5 w-5 text-gray-400"
-                    aria-hidden="true"
-                  />
-                )}
-              </button>
+            <form
+              onSubmit={handleSumbmit}
+              className="block space-y-5 w-full mb-5"
+              action=""
+            >
+
+              <div className="space-y-8 w-full">
+                <div>
+                <input
+                  className="mt-2 w-full placeholder:text-lg placeholder:italic text-black placeholder:font-light block bg-white w-4/5 border border-vividOrange rounded py-4 px-5 shadow-sm focus:outline-none focus:border-vividOrange focus:ring-vividOrange focus:ring-1 sm:text-sm"
+                  type="email"
+                  placeholder="Email"
+                  value={userData.username}
+                  onChange={(e) =>
+                    setUserData({ ...userData, username: e.target.value })
+                  }
+                />
+                </div>
+                <div>
+                  <div className="relative mt-2 shadow-sm">
+                  <input
+                  className="text-black w-full mt-2 placeholder:text-lg placeholder:italic placeholder:text-charcoalBlack placeholder:font-light block bg-white w-4/5 border border-vividOrange rounded py-4 px-5 shadow-sm focus:outline-none focus:border-vividOrange focus:ring-vividOrange focus:ring-1 sm:text-sm mb-4"
+                  type={isSeePassword ? 'text' : 'password'}
+                  placeholder="Password"
+                  value={userData.password}
+                  onChange={(e) =>
+                    setUserData({ ...userData, password: e.target.value })
+                  }
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsSeePassword(!isSeePassword);
+                  }}
+                  className="absolute cursor-pointer inset-y-0 right-0 flex items-center pr-3"
+                >
+                  {isSeePassword ? (
+                    <img
+                      src={Eyeicon}
+                      className="h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <img
+                      src={Eyeslasesicon}
+                      className="h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                  )}
+                </button>
+                  </div>
+                </div>
+              </div>
+
+
 
               <div className="text-center">
                 <button
@@ -142,6 +155,8 @@ export function Login() {
             </form>
           </div>
         </div>
+        </div>
+
       </div>
     </>
   );
