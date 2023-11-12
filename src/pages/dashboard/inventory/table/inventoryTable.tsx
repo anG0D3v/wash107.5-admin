@@ -123,8 +123,7 @@ function InventoryTable() {
     setProductsAdd({ ...productAdd, Category: value });
   };
 
-  const handleOpen = (item: inventoryList | undefined) => {
-   
+  const handleOpen = (item: inventoryList | undefined) => { 
     if(item){
       const { id, ...newproductDatawithId } = item;
       setProductsDetails(newproductDatawithId);
@@ -225,7 +224,7 @@ function InventoryTable() {
           helperMsg=""
         />
         </>
-        ) : (
+        ) : category === 'Dry Cycle' || category === 'Wash Cycle' ? (
           <>
           <label htmlFor="" className="block text-gray-700 font-bold mt-2">Duration</label>
           <CustomInput
@@ -246,7 +245,7 @@ function InventoryTable() {
             helperMsg=""
           />
           </>
-        )}
+        ) : null}
         <div className='flex align-center justfy-center'>
         <Checkbox
           name='Availability'
@@ -450,6 +449,10 @@ function InventoryTable() {
       productAdd.Description &&
       productAdd.Image_Url
     ) {
+      if(/^\s*$/.test(productAdd.Name) || /^\s*$/.test(productAdd.Description)){
+        toast.error('Input contains only spaces. Please enter valid text.');
+        return
+       }
       const productData = { 
         ...productAdd, 
         Price: Number(productAdd.Price),
@@ -460,24 +463,27 @@ function InventoryTable() {
         toast.error('Input value must not be negative')
         return
       }
-      const check = category === 'Dry Cycle' || category === 'Wash Cycle' ? productData.Duration : productData.Quantity_In_Stock;
-      if(!check || check === 0 || isNaN(check)){
-        toast.error('Input value must not be 0')
-        return
-      }
-      if(check.toString().includes('.')){
-        let warn = '';
-        if(category === 'Dry Cycle' || category === 'Wash Cycle'){
-          warn += `No decimal places in Duration field`
-        }else{
-          warn += `No decimal places in Quantity fields`
+      if(category === 'Service'){
+        if(isNaN(productData.Price)){
+          toast.error('Price should not be empty')
+          return
         }
-        toast.error(warn)
-        return
-      }
-      if(category !== 'Service' && (productData.Price === 0 || isNaN(productData.Price) || !productData.Price)){
-        toast.error('Input value must not be 0')
-        return
+      }else{
+        const check = category === 'Dry Cycle' || category === 'Wash Cycle' ? productData.Duration : productData.Quantity_In_Stock;
+        if((!check || check === 0 || isNaN(check)) || (!productData.Price || productData.Price === 0 || isNaN(productData.Price))){
+          toast.error('Input value must not be 0')
+          return
+        }
+        if(check.toString().includes('.')){
+          let warn = '';
+          if(category === 'Dry Cycle' || category === 'Wash Cycle'){
+            warn += `No decimal places in Duration field`
+          }else{
+            warn += `No decimal places in Quantity fields`
+          }
+          toast.error(warn)
+          return
+        }
       }
       try {
         setOpen('');
@@ -517,6 +523,18 @@ function InventoryTable() {
           await loadInventory()
           setImagePrev('')
           setShowBackdrop(false);
+          setProductsAdd({
+            Availability: true,
+            Category: category,
+            Created_By: admin.info?.id,
+            Created_On: new Date().toISOString().slice(0, 19).replace('T', ' '),
+            Description: '',
+            Image_Url: '',
+            Name: '',
+            Price: 0,
+            Duration: 0,
+            Quantity_In_Stock: 0,
+          })
           toast.success('Added successfully.');
         })
         .catch((error) => {
@@ -553,30 +571,38 @@ function InventoryTable() {
       Last_Updated_By: updatedBy,
       Last_Updated_On: updatedOn,
     };
-    if(category !== 'Service' && (productData1.Price === 0 || isNaN(productData1.Price) || !productData1.Price)){
-      toast.error('Input value must not be 0')
+    if(/^\s*$/.test(productData1.Name) || /^\s*$/.test(productData1.Description)){
+      toast.error('Input contains only spaces. Please enter valid text.');
       return
+     }
+    if(category === 'Service'){
+      if(isNaN(productData1.Price) || productData1.Price < 0){
+        toast.error('Input value must not be negative')
+        return
+      }
+    }else{
+      const check = category === 'Dry Cycle' || category === 'Wash Cycle' ? productData1.Duration : productData1.Quantity_In_Stock;
+      if(!check || check === 0 || isNaN(check) || productData1.Price === 0 || isNaN(productData1.Price)){
+        toast.error('Input value must not be 0')
+        return
+      }
+      if(check.toString().includes('.')){
+        let warn = '';
+        if(category === 'Dry Cycle' || category === 'Wash Cycle'){
+          warn += `No decimal places in Duration field`
+        }else{
+          warn += `No decimal places in Quantity fields`
+        }
+        toast.error(warn)
+        return
+      }
     }
     let data;
     if(productData1.Duration < 0 || productData1.Price < 0 || productData1.Quantity_In_Stock < 0){
       toast.error('Input value must not be negative')
       return
     }
-    const check = category === 'Dry Cycle' || category === 'Wash Cycle' ? productData1.Duration : productData1.Quantity_In_Stock;
-    if(!check || check === 0 || isNaN(check)){
-      toast.error('Input value must not be 0')
-      return
-    }
-    if(check.toString().includes('.')){
-      let warn = '';
-      if(category === 'Dry Cycle' || category === 'Wash Cycle'){
-        warn += `No decimal places in Duration field`
-      }else{
-        warn += `No decimal places in Quantity fields`
-      }
-      toast.error(warn)
-      return
-    }
+
 
     if (category === 'Service') {
       const { Quantity_In_Stock, Duration, ...newproductDatawithId } = productData1;

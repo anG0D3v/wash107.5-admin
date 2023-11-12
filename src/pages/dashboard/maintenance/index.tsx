@@ -163,6 +163,10 @@ export function Maintenance() {
       announceDetails.Announcement_Name &&
       announceDetails.Image_Url 
     ) {
+     if(/^\s*$/.test(announceDetails.Announcement_Name)){
+      toast.error('Input contains only spaces. Please enter valid text.');
+      return
+     }
       try {
         setOpen(false);
         setShowBackdrop(true);

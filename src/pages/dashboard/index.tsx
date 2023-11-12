@@ -221,7 +221,7 @@ export function Dashboard() {
       <h1 className="text-2xl font-extrabold text-gray-700 tracking-wide mb-4">Visible Announcements</h1>
       </div>
          
-          <div className='flex overflow-x-auto h-max whitespace-nowrap justify-center items-center w-2/3 gap-4'>
+          <div className='flex mx-12 overflow-x-auto h-max whitespace-nowrap justify-center items-center w-2/3 gap-4'>
           {filteredAnnouncements?.map((data,index) =>{
             if(!data){return null;}
               else{
@@ -229,7 +229,7 @@ export function Dashboard() {
               <div className='flex-none w-86 h-80 border p-2 box-border'
                key={index}>
                 <img
-                className='w-full h-64 max-h-64 object-contain'
+                className='w-86 h-64 max-h-64 object-contain'
                  src={data.Image_Url}
                  alt="" />
                  <h1 className='ml-2'>{data.Announcement_Name}</h1>
